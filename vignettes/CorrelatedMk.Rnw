@@ -1,0 +1,838 @@
+\documentclass[a4paper]{article}
+%\VignetteEncoding{UTF-8}
+%\VignetteIndexEntry{CorrelatedMk}
+%\VignettePackage{mkcor}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{indentfirst}
+\usepackage{setspace}
+\usepackage{float}
+\usepackage[margin=1in]{geometry}
+\usepackage[hidelinks]{hyperref}
+
+\usepackage{tcolorbox,xcolor}
+\tcbuselibrary{skins,breakable}
+\newenvironment{Schunk}{\begin{tcolorbox}[breakable,colback=black!10,top=1mm,bottom=0mm,left=1mm,right=0mm,boxrule=.1mm]}{\end{tcolorbox}}
+
+\definecolor{darkblue}{rgb}{0, 0, 0.9}
+
+\author{Authors}
+\title{The correlated Mk model}
+%\date{}
+
+\begin{document}
+\DefineVerbatimEnvironment{Sinput}{Verbatim}{formatcom=\color{darkblue}}
+\DefineVerbatimEnvironment{Soutput}{Verbatim}{formatcom=\color{black}\vspace{-1.5em}}
+\maketitle\hrule
+\tableofcontents\vspace*{1pc}\hrule
+
+<<echo=false,quiet=true>>=
+options(width = 80, prompt = "> ")
+@
+
+\spacing{1.5}
+
+\section{Theoretical background}
+\label{sec:tb}
+Let $X$ and $Y$ be two categorical characters having $k_X$ and $k_Y$ character
+states, respectively. Under the correlated Mk model, evolution of $X$ and $Y$
+along the edges of a phylogeny is described by a continuous-time Markov chain
+with transition rate matrix
+
+\begin{equation*}
+[Q_{XY}]_{ij,kl} = \begin{cases}
+-(\lambda_X+\lambda_Y+\lambda_{XY}) & i = j,k = l \\
+\frac{\lambda_X}{k_X-1} & i \ne j,k = l \\
+\frac{\lambda_Y}{k_Y-1} &  i = j,k \ne l\\
+\frac{\lambda_{XY}}{(k_X-1)(k_Y-1)} & i \ne j,k \ne l
+\end{cases}
+\end{equation*}
+
+The tuple $ij,kl$ is used to denote a change from $i$ to $j$ in $X$ and a
+change from $k$ to $l$ in $Y$. Note that for any given combination of character
+states in $X$ and $Y$, there are $k_X-1$ ways in which $X$ but not $Y$ can
+change, $k_Y-1$ ways in which $Y$ but not $X$ can change, and $(k_X-1)
+(k_Y-1)$ ways in which both $X$ and $Y$ can change, hence the specific form of
+the transition rate matrix. Changes in $X$ occur independently of changes in
+$Y$ according to a Poisson process with rate $\lambda_X$, and changes in $Y$
+occur independently of changes in $X$ according to a second Poisson process
+with rate $\lambda_Y$. A third independent Poisson process causes coincident
+change in $X$ and $Y$ with rate $\lambda_{XY}$. The common term $\lambda_{XY}$
+means that counts of evolutionary changes in $X$ and $Y$ form a correlated 
+Poisson process known as a common shock model \cite{Lindskog2003} with a 
+product-moment correlation coefficient given by
+
+\begin{equation*}
+\rho_{XY} = \frac{\lambda_{XY}}{\sqrt{(\lambda_X+\lambda_{XY})(\lambda_Y+\lambda_{XY})}}
+\end{equation*}
+
+Let $P_{ij,kl}(t) = \left[e^{Q_{XY}t}\right]_{ij,kl}$ denote the probability that 
+character $X$ changes from state $i$ to state $j$ and character $Y$ changes 
+from state $k$ to state $l$ over a time interval $t$. The transition 
+probability function of the correlated Mk model is claimed to be
+
+\begin{equation*}
+P_{ij,kl}(t) = \begin{cases}
+\frac{1}{k_Xk_Y}\left(1 + (k_X-1)e^{d_Xt} + (k_Y-1)e^{d_Yt} + (k_X-1)(k_Y-1)e^{d_{XY}t}\right) & \text{$i=j$, $k=l$} \\
+\frac{1}{k_Xk_Y}\left(1 - e^{d_Xt} + (k_Y-1)e^{d_Yt} - (k_Y-1)e^{d_{XY}t}\right) & \text{$i \ne j$, $k$=$l$} \\
+\frac{1}{k_Xk_Y}\left(1 + (k_X-1)e^{d_Xt} - e^{d_Yt} - (k_X-1)e^{d_{XY}t}\right) & \text{$i=j$, $k \ne l$} \\
+\frac{1}{k_Xk_Y}\left(1 - e^{d_Xt} - e^{d_Yt} + e^{d_{XY}t}\right) & \text{$i \ne j$, $k \ne l$}
+\end{cases}
+\end{equation*}
+
+Where
+
+\begin{align*}
+d_X &= -\frac{k_X}{k_X-1}(\lambda_X+\lambda_{XY}) \\
+d_Y &= -\frac{k_Y}{k_Y-1}(\lambda_Y+\lambda_{XY}) \\
+d_{XY} &= -(\frac{k_X}{k_X-1}\lambda_X + \frac{k_Y}{k_Y-1}\lambda_Y + \frac{(k_X-1)(k_Y-1)-1}{(k_X-1)(k_Y-1)}\lambda_{XY})
+\end{align*}
+
+Because of the symmetry in these equations, it will be useful to
+let $P_{00}(t)$ stand in for $P_{ij,kl}(t)$ whenever $i=j,k=l$, and likewise
+to let $P_{10}(t), P_{01}(t),$ and $P_{11}(t)$ stand in for the cases $i \ne j, k=l$; 
+$i=j, k \ne l$; and $i \ne j, k \ne l$, respectively.
+
+To arrive at these equations we start with case $\lambda_{XY} = 0$, which
+reduces the correlated Mk model to two independent Mk models for $X$ and $Y$.
+In that case, we can get the joint transition probabilities simply by
+multiplying the transition probabilities of the independent Mk models, which
+are known from previous work \cite{Lewis2001,Neyman1971,Tuffley1997}. Doing so results in 
+the form of the transition probabilities given above, with the exception that
+
+\begin{align*}
+d_X &= -\frac{k_X}{k_X-1}\lambda_X \\
+d_Y &= -\frac{k_Y}{k_Y-1}\lambda_Y \\
+d_{XY} &= -(\frac{k_X}{k_X-1}\lambda_X + \frac{k_Y}{k_Y-1}\lambda_Y)
+\end{align*}
+
+Here, the scalars $d_X,d_Y,$ and $d_{XY}$ are actually
+eigenvalues of the transition rate matrix with multiplicities $k_X-1,k_Y-1,$
+and $(k_X-1)(k_Y-1)$. To see this, note that when $X$ is viewed
+independently, its rate matrix looks like
+
+\begin{equation*}
+[Q_X]_{ij} = \begin{cases}
+-\lambda_X              & i = j \\
+\frac{\lambda_X}{k_X-1} & i \ne j
+\end{cases}
+\end{equation*}
+
+We can make this similar to a diagonal matrix by premultiplying $Q_X$
+by a matrix $E_X$ that looks like
+
+\begin{equation*}
+[E_X]_{ij} = \lambda_X\times\begin{cases}
+1               & i = j < k_X \\
+-1              & i < k_X, j = k_X \\
+\frac{1}{k_X}   & i = k_X \\
+0               & \text{otherwise}
+\end{cases}
+\end{equation*}
+
+and postmultiplying $Q_X$ by $E_X^{-1}$
+
+\begin{equation*}
+[E_X^{-1}]_{ij} = \lambda_X\times\begin{cases}
+\frac{k_X}{k_X-1}   & i = j < k_X \\
+1                   & j = k_X \\
+-\frac{1}{k_X}      & \text{otherwise}
+\end{cases}
+\end{equation*}
+
+The resulting diagonal matrix has the first $k_X-1$ elements of the diagonal 
+equal to $-\frac{k_X}{k_X-1}\lambda_X$ and the final element equal to 0. Because eigenvalues of 
+diagonal matrices are just the diagonal elements, and because similar matrices 
+have identical eigenvalues, these are also the eigenvalues of $Q_X$. The
+eigenvalues of $Q_Y$ are found analagously. Finally, because the joint transition 
+rate matrix of $X$ and $Y$ (when they are evolving independently) is the Kronecker 
+sum of their individual transition rate matrices, standard theory tells us that 
+we can find its eigenvalues by taking the pairwise sums of the eigenvalues of the 
+individual rate matrices \cite{Horn1991}. If we multiply each eigenvalue by its 
+multiplicity and take the sum, it adds up to $-k_Xk_Y(\lambda_X+\lambda_Y)$.
+
+Now, to get to the case
+$\lambda_{XY} \ne 0$, we start by conjecturing that these properties do not
+change. That is, that the multiplicity of each eigenvalue remains the same but
+that the sum of eigenvalues scaled by their multiplicities is now $-k_Xk_Y(\lambda_X+\lambda_Y+\lambda_{XY})$.
+It is natural to set $d_X = -\frac{k_X}{k_X-1}(\lambda_X+\lambda_{XY})$
+and $d_Y = -\frac{k_Y}{k_Y-1}(\lambda_Y+\lambda_{XY})$ because we know this 
+leads to valid transition probabilities when $X$ and $Y$ are viewed independently. 
+Combined with the conjectured sum of eigenvalues (scaled by their multiplicities), 
+this choice leads, by simple algebra, to
+$d_{XY} = -(\frac{k_X}{k_X-1}\lambda_X + \frac{k_Y}{k_Y-1}\lambda_Y + \frac{(k_X-1)(k_Y-1)-1}{(k_X-1)(k_Y-1)}\lambda_{XY})$.
+
+To prove that these transition probabilities are valid, it is necessary to show
+that they satisfy the Kolomogorov forward equations \cite{Ross1995}
+
+\begin{equation*}
+\frac{\partial P_{ij,kl}(t)}{\partial t} = \sum_{g,h}P_{ig,kh}(t)[Q_{XY}]_{gj,hl}
+\end{equation*}
+
+Consider the case $i \ne j, k=l$, corresponding to $\frac{\partial P_{10}(t)}{\partial t}$.
+To simplify this sum we need to enumerate all the transitions
+that involve a change in $X$ but not $Y$, a change in $Y$ but not $X$, and a
+change in both $X$ and $Y$. Recall that there are $k_X-1$ transitions that
+involve a change in $X$ but not in $Y$ that happen with rate $\frac{\lambda_X}{k_X-1}$.
+In the sum, this occurs whenever $g \ne j, h=l$. Because we are
+considering the case $i \ne j, k=l$, we see that one such instance occurs when
+$g = i, h=l$. Writing $i$ in place of $g$ and $l$ (equivalently $k$) in place of
+$h$ inside the sum, we see that one term is $\frac{\lambda_X}{k_X-1}P_{00}(t)$.
+The remaining $k_X-2$ transitions will occur whenever $g \ne i, h=l$.
+Making these substitutions inside the sum as before, we see that the $k_X-2$
+terms reduce to the single term $\frac{(k_X-2)\lambda_X}{k_X-1}P_{10}(t)$.
+Continuing this logic for the $k_Y-1$ transitions that involve a change
+in $Y$ but not in $X$ (i.e., all indices for which $g = j ,h \ne l$) shows they
+reduce to the  single term $\lambda_YP_{11}(t)$. Finally, the $(k_X-1)(k_Y-1)$
+transitions that involve simultaneous change in $X$ and $Y$ occur for
+all index pairs $g \ne j, h \ne l$. Making these substitutions in the sum shows
+that $g = i, h \ne l$ occurs $k_Y-1$ times resulting in the term $\frac{\lambda_{XY}}{k_X-1}P_{01}(t)$
+and that $g \ne i, h \ne l$ occurs the remaining $(k_X-2)(k_Y-1)$ times resulting
+in the term $\frac{\lambda_{XY}(k_X-2)}{k_X-1}P_{11}(t)$. The only index pair
+we have not yet considered is $g= j, h = l$. This occurs once, contributing the
+final term $-(\lambda_X+\lambda_Y+\lambda_{XY})P_{10}(t)$. Putting all these 
+terms together shows that the sum eventually simplifies to
+
+\begin{align*}
+\frac{\partial P_{10}(t)}{\partial t} = &-(\lambda_X+\lambda_Y+\lambda_{XY})P_{10}(t)\\
+&+ \frac{\lambda_X}{k_X-1}P_{00}(t)\\
+&+ \frac{\lambda_X(k_X-2)}{k_X-1}P_{10}(t)\\
+&+ \frac{\lambda_{XY}}{k_X-1}P_{01}(t)\\
+&+ (\lambda_Y+\frac{\lambda_{XY}(k_X-2)}{k_X-1})P_{11}(t)
+\end{align*}
+
+We must now substitute $P_{00}(t), P_{10}(t), P_{01}(t),$ and $P_{11}(t)$ into 
+the righthand side and verify that the resulting equation is in fact equal to
+$\frac{\partial P_{10}(t)}{\partial t}$. We start by differentiating $P_{10}(t)$
+with respect to time
+
+\begin{align*}
+\frac{\partial P_{10}(t)}{\partial t} &= \frac{\partial \phantom{}}{\partial t}\left[\frac{1}{k_Xk_Y}\left(1 - e^{d_Xt} + (k_Y-1)e^{d_Yt} - (k_Y-1)e^{d_{XY}t}\right)\right] \\
+&= \left[-d_Xe^{d_Xt} + d_Y(k_Y-1)e^{d_Yt} - d_{XY}(k_Y-1)e^{d_{XY}t}\right] / k_Xk_Y
+\end{align*}
+
+This is what the righthand side above must simplify to after substitution if 
+the correlated Mk transition probabilities are correct.
+
+Making these substitutions gives
+
+\begin{align*}
+\frac{\partial P_{10}(t)}{\partial t} = & -(\lambda_X+\lambda_Y+\lambda_{XY})\left(1 - e^{d_Xt} + (k_Y-1)e^{d_Yt} - (k_Y-1)e^{d_{XY}t}\right) / k_Xk_Y \\
+& + \frac{\lambda_X}{k_X-1}\left(1 + (k_X-1)e^{d_Xt} + (k_Y-1)e^{d_Yt} + (k_X-1)(k_Y-1)e^{d_{XY}t} \right) / k_Xk_Y \\
+& + \frac{\lambda_X(k_X-2)}{k_X-1}\left(1 - e^{d_Xt} + (k_Y-1)e^{d_Yt} - (k_Y-1)e^{d_{XY}t}\right) / k_Xk_Y \\
+& + \frac{\lambda_{XY}}{k_X-1}\left(1 + (k_X-1)e^{d_Xt} - e^{d_Yt} - (k_X-1)e^{d_{XY}t}\right) / k_Xk_Y \\
+& + \left(\lambda_Y + \frac{\lambda_{XY}(k_X-2)}{k_X-1}\right)\left(1 - e^{d_Xt} - e^{d_Yt} + e^{d_{XY}t}\right) / k_Xk_Y
+\end{align*}
+
+Ignoring the divisor $k_Xk_Y$ for simplicity, we find that
+
+\begin{itemize}
+\item all the terms involved in an expansion with a leading 1 cancel out
+\item expanding all the terms involving $e^{d_Xt}$ shows that they simplify to 
+$\frac{k_X}{k_X-1}(\lambda_X + \lambda_{XY})e^{d_Xt}$, which we recognize as
+$-d_Xe^{d_Xt}$
+\item expanding all the terms involving $e^{d_Yt}$ shows that they simplify to 
+$-k_Y(\lambda_Y + \lambda_{XY})e^{d_Yt}$, which we recognize as
+$d_Y(k_Y-1)e^{d_Yt}$
+\item expanding all the terms involving $e^{d_{XY}t}$ shows that they simplify to 
+$(\frac{\lambda_Xk_X(k_Y-1)}{k_X-1}+\lambda_Yk_Y+\frac{(k_X-1)(k_Y-1)-1}{k_X-1}\lambda_{XY})e^{d_{XY}t}$, 
+which we recognize as $-d_{XY}(k_Y-1)e^{d_{XY}t}$
+\end{itemize}
+
+Thus, after substitution, expansion, and simplification we are left with
+
+\begin{equation*}
+\frac{\partial P_{10}(t)}{\partial t} = \left[-d_Xe^{d_Xt} + d_Y(k_Y-1)e^{d_Yt} - d_{XY}(k_Y-1)e^{d_{XY}t}\right] / k_Xk_Y
+\end{equation*}
+
+Thereby proving that the transition probability for $P_{10}(t)$ is valid. The
+other transition probabilities may be shown to be correct using the same approach.
+
+\section{Fitting the correlated Mk model to data}
+\label{sec:fit}
+Here we show how to fit the correlated Mk model to an empirical dataset
+from \cite{Lafuma2021}, consisting of dental-diet state classifications for
+548 squamate reptiles (lizards and snakes). We begin by loading the package
+and datasets
+
+<<>>=
+set.seed(1123581321)
+library(mkcor)
+data(squamate_tree)
+data(squamate_dental_diet_states)
+@
+
+Next, we format the data to conform to the expectations of the functions we
+will use to fit the model
+
+<<>>=
+x = data.frame(
+    tip.label = squamate_dental_diet_states$species,
+    state.id = factor(squamate_dental_diet_states$tooth.complexity)
+)
+y = data.frame(
+    tip.label = squamate_dental_diet_states$species,
+    state.id = factor(squamate_dental_diet_states$diet,
+      levels=c("Insectivorous","Carnivorous","Omnivorous","Herbivorous"))
+)
+@
+
+We have two options to fit the correlated Mk model: we can use
+expectation-maximization via \texttt{mkcor\_fit\_em} or we can use the
+L-BFGS-B algorithm implemented in \texttt{stats::optim} via \texttt{mkcor\_fit}.
+Here we will use \texttt{mkcor\_fit\_em} because it returns more information.
+You could also first fit the model with \texttt{mkcor\_fit} and then
+run \texttt{mkcor\_fit\_em} using the parameter estimates found by
+\texttt{mkcor\_fit}.
+
+<<>>=
+fit0 = mkcor_fit_em(x, y, squamate_tree, correlated=FALSE, num_fits=5)
+fit = mkcor_fit_em(x, y, squamate_tree, correlated=TRUE, num_fits=5)
+@
+
+We fit two models. One assuming independence (\texttt{correlated=FALSE}) and
+one assuming dependence (\texttt{correlated=TRUE}). In both cases we seed
+the fitting algorithm with \texttt{num\_fits=5} random parameter initializations
+and return the best fitting model.
+
+The independent model converges more quickly but the correlated model ultimately
+has a higher likelihood
+
+\begin{figure}[H]
+<<fig=TRUE>>=
+plot(fit$logL, las=1, ylab="log likelihood", xlab="EM iteration", 
+  ylim=range(union(fit$logL, fit0$logL)), type='s', bty='l')
+points(fit$logL, pch=19, cex=0.8)
+points(fit0$logL, type='s')
+points(fit0$logL, pch=21, cex=0.8, bg='white')
+legend('right', legend=c("correlated", "independent"), lty=1, pch=c(19,21),
+  pt.bg='white', title='Mk model', inset=0.01)
+@
+\caption{Log likelihood trajectories during expectation-maximization when
+fitting the correlated Mk model.}
+\label{fig1}
+\end{figure}
+
+And a likelihood ratio test indicates that the correlated model is a
+signficantly better fit to the data than an independent model
+
+<<echo=TRUE>>=
+pchisq(-2*(fit0$value - fit$value), 1, lower.tail=FALSE)
+@
+
+Parameter estimates and standard errors are accessed by
+
+<<echo=TRUE>>=
+fit$par
+@
+
+Note that the correlation coefficient \texttt{corr.xy} is a derived parameter
+and is not estimated directly (it is a function of the rates, see
+\hyperref[sec:tb]{\textbf{Theoretical background}}).
+The standard errors are computed by inverting the negative Hessian matrix
+(which is found via \texttt{stats::optimHess}). From this we can form
+confidence intervals by assuming the parameter estimates are normally
+distributed about their true values (a standard asymptotic assumption). 
+For example, the 95\% confidence
+interval for the correlation coefficient would range from
+\Sexpr{sprintf("%.2f", fit$par$par[4] - 1.96*fit$par$se[4])} to
+\Sexpr{sprintf("%.2f", fit$par$par[4] + 1.96*fit$par$se[4])}
+
+<<echo=TRUE>>=
+c(fit$par$par[4] - 1.96*fit$par$se[4], fit$par$par[4] + 1.96*fit$par$se[4])
+@
+
+Inspecting some of the other results we find that about \Sexpr{round(sum(fit$event.counts))}
+character state changes are needed, on average, to explain the observed
+distribution of character states at the tips of the phylogeny and that
+approximately \Sexpr{round(fit$event.counts[3])} of these involve
+simultaneous change in both tooth complexity and diet.
+
+<<echo=TRUE>>=
+fit$event.counts
+@
+
+What does it mean to say that about \Sexpr{round(sum(fit$event.counts))}
+character state changes are needed, on average, to explain the observed
+character state distribution? Suppose we were to simulate data under the fitted
+model and keep only those simulations whose character state distribution at
+the tips matched the tip state distribution in the empirical
+data. If we were to do that, and then count the number of character state
+changes in the simulated datasets, we would find the average to be about
+\Sexpr{round(sum(fit$event.counts))}. Fortunately, we don't need to actually
+do these simulations because we compute these averages exactly during the
+course of the EM algorithm using a technique that's been called
+``simulation free stochastic-mapping'' \cite{Minin2008}. (These averages are
+actually the sufficient statistics of the correlated Mk model. See
+also \cite{Hobolth2005}).
+
+The expected counts in \texttt{fit\$event.counts} are derived from sums over
+all branches in the phylogeny. The branch-specific expectations are available
+in the component \texttt{fit\$branch.counts}. Note that this is a three
+dimensional array
+
+<<echo=TRUE>>=
+dim(fit$branch.counts)
+@
+
+The third dimension indexes branches in the phylogeny and the first two
+index character states. For example, the element
+\texttt{fit\$branch.counts[1, 3, 1]} returns the expected number of
+evolutionary transitions from character state \texttt{1} to state \texttt{3} on
+the branch leading to node \texttt{1}. To see the how the character state
+combinations in each character map to integer values just do
+
+<<echo=TRUE>>=
+fit$states
+@
+
+We can use these branch-specific counts to summarize and visualize the
+results in different ways depending on our question. For example, suppose we
+want to know what fraction of the \Sexpr{sprintf("%.2f", fit$event.counts[3])} expected coincident
+changes involve coordinated increases or decreases in tooth complexity and plant
+consumption? Then we can write a function like the one shown at the
+end of this document to classify each coincident transition with respect to the
+pattern of interest
+
+<<classify_coincident_transitions,echo=FALSE>>=
+classify_coincident_transitions = function(expected_counts, state_map)
+{
+  s = state_map
+  n = nrow(s)
+  counts = numeric(3)
+  for (i in 1:n)
+  {
+    for (j in 1:n)
+    {
+      # coincident change
+      if (s[i,1] != s[j,1] && s[i,2] != s[j,2])
+      {
+        counts[3] = counts[3] + expected_counts[i,j]
+        # increase plant consumption
+        A = (s[i,2] %in% c("Carnivorous","Insectivorous","Omnivorous") 
+              && s[j,2] == "Herbivorous") ||
+            (s[i,2] %in% c("Carnivorous","Insectivorous") 
+              && s[j,2] == "Omnivorous")
+        # increase cusp number
+        B = as.integer(substr(s[i,1],1,1)) < as.integer(substr(s[j,1],1,1))
+        if (A && B)
+          counts[1] = counts[1] + expected_counts[i,j]
+        # decrease plant consumption
+        A = (s[i,2] == "Herbivorous" &&
+              s[j,2] %in% c("Carnivorous","Insectivorous","Omnivorous")) ||
+            (s[i,2] == "Omnivorous" &&
+              s[j,2] %in% c("Carnivorous","Insectivorous"))
+        # decrease cusp number
+        B = as.integer(substr(s[i,1],1,1)) > as.integer(substr(s[j,1],1,1))
+        if (A && B)
+          counts[2] = counts[2] + expected_counts[i,j]
+      }
+    }
+  }
+  return (counts)
+}
+@
+
+Applying this function to the results
+
+<<echo=TRUE>>=
+branch_counts = apply(fit$branch.counts, 3, classify_coincident_transitions, 
+  fit$states)
+counts = rowSums(branch_counts)
+counts
+@
+
+Reveals that \Sexpr{sprintf("%.2f", sum(counts[1:2]))}, or \Sexpr{round(100*sum(counts[1:2])/counts[3])}
+percent, of all coincident transitions involve coordinated increases or decreases 
+in tooth complexity and plant consumption, suggesting that this is the
+evolutionary dynamic that is largely responsible for the signal of positive 
+correlation in the data.
+
+
+<<outline_clade,echo=FALSE>>=
+outline_clade = function(root, phy, ...)
+{
+  l = get("last_plot.phylo", env=.PlotPhyloEnv)
+  tips = ephylo_tips(phy, root)
+  # connect the tips
+  tips = ephylo_tips(phy, root)
+  r = max(phy$time[tips])
+  theta1 = atan2(l$yy[head(tips, 1)], l$xx[head(tips, 1)])
+  theta2 = atan2(l$yy[tail(tips, 1)], l$xx[tail(tips, 1)])
+  if (theta1 >= 0 && theta2 < 0)
+    theta2 = theta2 + 2*pi
+  x = r*cos(seq(theta1, theta2,,100))
+  y = r*sin(seq(theta1, theta2,,100))
+  # do the right outline
+  node = tail(tips, 1)
+  while (node != root) {
+    r = phy$time[phy$parent[node]]
+    theta1 = atan2(tail(y, 1), tail(x, 1))
+    xx2 = l$xx[phy$parent[node]]
+    yy2 = l$yy[phy$parent[node]]
+    theta2 = atan2(yy2, xx2)
+    if (theta1 >= 0 && theta2 < 0)
+      theta2 = theta2 + 2*pi
+    if (theta1 < 0 && theta2 >= 0)
+      theta2 = theta2 - 2*pi
+    xx1 = r*cos(seq(theta1, theta2,,10))
+    yy1 = r*sin(seq(theta1, theta2,,10))
+    x = c(x, xx1)
+    y = c(y, yy1)
+    node = phy$parent[node]
+  }
+  # do the left outline
+  while (node != tips[1]) {
+    xx2 = l$xx[phy$left.child[node]]
+    yy2 = l$yy[phy$left.child[node]]
+    theta1 = atan2(tail(y, 1), tail(x, 1))
+    theta2 = atan2(yy2, xx2)
+    if (theta1 >= 0 && theta2 < 0)
+      theta2 = theta2 + 2*pi
+    if (theta1 < 0 && theta2 >= 0)
+      theta2 = theta2 - 2*pi
+    r = phy$time[node]
+    xx1 = r*cos(seq(theta1, theta2,,10))
+    yy1 = r*sin(seq(theta1, theta2,,10))
+    x = c(x, xx1, xx2)
+    y = c(y, yy1, yy2)
+    node = phy$left.child[node]
+  }
+  polygon(x, y, ...)
+}
+@
+
+<<clade_theta,echo=FALSE>>=
+clade_theta = function(root, phy)
+{
+  l = get("last_plot.phylo", env=.PlotPhyloEnv)
+  # connect the tips
+  tips = ephylo_tips(phy, root)
+  r = max(phy$time[tips])
+  theta1 = atan2(l$yy[head(tips, 1)], l$xx[head(tips, 1)])
+  theta2 = atan2(l$yy[tail(tips, 1)], l$xx[tail(tips, 1)])
+  if (theta1 >= 0 && theta2 < 0)
+      theta2 = theta2 + 2*pi
+  if (theta1 < 0 && theta2 >= 0)
+    theta2 = theta2 - 2*pi
+  (theta1 + theta2) / 2
+}
+@
+
+We will usually be interested in knowing something about the phylogenetic
+distribution of coincident changes. If they are all clustered in a single
+clade, for example, that might suggest the signal of positive evolutionary
+correlation is due to something unique to a particular clade rather than to a
+more general selective coupling of the characters. One easy way to get at this
+question is just to plot the changes on the phylogeny
+
+<<outline_clade_plot_setup,echo=FALSE>>=
+# node indices corresponding to major named squamate groups
+gekkota = 558L
+dibamidae = 604L
+scincoidea = 607L
+polyglyphanodontia = 689L # nested in lacertoidea
+lacertoidea = 683L
+mosasuria = 785L
+serpentes = 794L
+anguimorpha = 886L
+iguania = 924L
+# limit plotting to the top 3/4 of branches
+ord = order(branch_counts[3,], decreasing=TRUE)[1:28]
+@
+
+\begin{figure}[H]
+<<outline_clade_plot,echo=FALSE,fig=TRUE,width=6,height=6>>=
+par(mar=c(0,0,0,0),xpd=NA)
+plot(squamate_tree, show.tip.label=FALSE, type='fan', edge.color='dark grey', 
+    open.angle=5, edge.width=0.5)
+l = get("last_plot.phylo", env=.PlotPhyloEnv)
+outline_clade(gekkota, squamate_tree, border=1, col="#0000000D", 
+  lwd=0.5)
+outline_clade(scincoidea, squamate_tree, border=1, col="#0000000D", 
+  lwd=0.5)
+outline_clade(lacertoidea, squamate_tree, border=1, col="#0000000D", 
+  lwd=0.5)
+outline_clade(serpentes, squamate_tree, border=1, col="#0000000D", 
+  lwd=0.5)
+outline_clade(anguimorpha, squamate_tree, border=1, col="#0000000D", 
+  lwd=0.5)
+outline_clade(iguania, squamate_tree, border=1, col="#0000000D", 
+  lwd=0.5)
+edgelabels(edge=match(ord,squamate_tree$edge[,2]), cex=branch_counts[3, ord], 
+  pch=19)
+edgelabels(edge=match(ord,squamate_tree$edge[,2]), cex=branch_counts[3, ord], 
+  pch=21, bg='white', lwd=0.25)
+r = 1.05*max(squamate_tree$time)
+theta = clade_theta(gekkota, squamate_tree)
+text(r*cos(theta), r*sin(theta), "1", cex=0.8)
+theta = clade_theta(scincoidea, squamate_tree)
+text(r*cos(theta), r*sin(theta), "2", cex=0.8)
+theta = clade_theta(lacertoidea, squamate_tree)
+text(r*cos(theta), r*sin(theta), "3", cex=0.8)
+theta = clade_theta(serpentes, squamate_tree)
+text(r*cos(theta), r*sin(theta), "4", cex=0.8)
+theta = clade_theta(anguimorpha, squamate_tree)
+text(r*cos(theta), r*sin(theta), "5", cex=0.8)
+theta = clade_theta(iguania, squamate_tree)
+text(r*cos(theta), r*sin(theta), "6", cex=0.8)
+legend(0,0, legend=c("1. Gekkota", "2. Scincoidea", "3. Lacertoidea",
+  "4. Serpentes", "5. Anguimorpha", "6. Iguania"), ncol=2, bty='n',
+  cex=0.8)
+@
+\caption{Phylogenetic distribution of coincident changes in tooth complexity
+and diet in squamate reptiles.}
+\label{fig2}
+\end{figure}
+
+There's clearly phylogenetic variability in the distribution of coincident
+evolutionary transitions -- none are observed among snakes and geckos, for 
+example. Here, the white points positioned on top of branches correspond to
+inferred coincident transitions, and the size of the point is scaled according
+to how many such transitions are estimated to occur (bigger equals more).
+The code to make this figure is listed in the appendix.
+
+Finally, we are also able to extract marginal probabilities of ancestral
+dental-diet state reconstructions. For example, looking at the root state
+reconstruction
+
+<<echo=TRUE>>=
+print(fit$state.probs[squamate_tree$root, ], digits=3)
+@
+
+Shows that nearly all the probability mass is assigned to state
+number \Sexpr{which.max(fit$state.probs[squamate_tree$root, ])},
+which is a unicuspid, insectivorous feeding modality
+
+<<echo=TRUE>>=
+fit$states[which.max(fit$state.probs[squamate_tree$root, ]),]
+@
+
+If we visualize all of the ancestral state reconstructions
+\vspace{-1.5em}
+<<piepoints,echo=FALSE>>=
+piepoints = function(x, rad, pie, piecol, piebg, ...)
+{
+  w = par("pin")[1]/diff(par("usr")[1:2])
+  h = par("pin")[2]/diff(par("usr")[3:4])
+  asp = w/h
+
+  theta = apply(
+    pie
+    , 1
+    , function(p) {
+        ang = cumsum((360 * p / sum(p)) * (pi / 180))
+        ang = cbind(c(0, ang[-length(ang)]), c(ang[-length(ang)], 2*pi))
+        ang
+    }
+    , simplify=FALSE
+  )
+
+  for (i in seq_along(theta))
+  {
+    xx = x[i, 1]
+    yy = x[i, 2]
+    th = theta[[i]]
+    for (j in 1:nrow(th))
+    {
+      if ((th[j,2] - th[j,1]) > 0)
+      {
+        wedges = seq(th[j, 1], th[j, 2], length.out=30)
+        xvec = rad[i] * cos(wedges) + xx
+        yvec = rad[i] * asp * sin(wedges) + yy
+        if (isTRUE(all.equal(unname(th[j,2] - th[j,1]), 2*pi)))
+        {
+          polygon(
+            xvec, yvec
+            , border=piecol[j]
+            , col=piebg[j]
+            , ...
+          )
+        }
+        else
+        {
+          polygon(
+            c(xx, xvec), c(yy, yvec)
+            , border=piecol[j]
+            , col=piebg[j]
+            , ...
+          )
+        }
+      }
+      else
+        next
+    }
+  }
+}
+@
+
+\begin{figure}[H]
+<<asr_plot,echo=FALSE,fig=TRUE>>=
+colv = c(
+  rev(c("#543005",
+  "#8c510a",
+  "#bf812d",
+  "#dfc27d")),
+
+  "#80cdc1",
+  "#35978f",
+  "#01665e",
+  "#003c30",
+
+  rev(c("#40004b",
+  "#762a83",
+  "#9970ab",
+  "#c2a5cf")),
+
+  "#a6dba0",
+  "#5aae61",
+  "#1b7837",
+  "#00441b"
+)
+layout(matrix(c(1,1,1,1,1,1,2,2),2,4))
+par(mar=c(0,0,0,0),xpd=NA)
+plot(squamate_tree, show.tip.label=FALSE, type='fan', edge.color='dark grey', 
+    open.angle=5, edge.width=0.5)
+l = get("last_plot.phylo", env=.PlotPhyloEnv)
+for (node in 1:squamate_tree$num.nodes) {
+    piepoints(
+        matrix(c(l$xx[node],l$yy[node]),nrow=1),
+        rad=3, piecol=rep(1,16),
+        pie=fit$state.prob[node,,drop=FALSE], piebg=colv, lwd=0.5
+    )
+}
+par(mar=c(0,0,0,0), xpd=NA)
+plot.new()
+plot.window(xlim=c(0,1),ylim=c(0,1))
+legend(
+    "center",
+    bty="n",
+    pch=21, 
+    pt.bg=colv, 
+    pt.cex=1.5,
+    pt.lwd=0.5,
+    legend=paste(
+    gsub("[0-9]_", "", fit$states[,1]),
+    fit$states[,2],
+    sep=" - "),
+    ncol=1,
+    cex=0.9,
+    inset=0.1
+)
+@
+\caption{Ancestral dental-diet state reconstructions in squamate reptiles
+under the correlated Mk model.}
+\label{fig3}
+\end{figure}
+
+<<echo=FALSE>>=
+iguania_plants = sum(y[ephylo_tips(squamate_tree,iguania),2]=="Herbivorous"
+  |y[ephylo_tips(squamate_tree,iguania),2]=="Omnivorous")
+skink_plants = sum(y[ephylo_tips(squamate_tree,scincoidea),2]=="Herbivorous"
+  |y[ephylo_tips(squamate_tree,scincoidea),2]=="Omnivorous")
+lacertid_plants = sum(y[ephylo_tips(squamate_tree,lacertoidea),2]=="Herbivorous"
+  |y[ephylo_tips(squamate_tree,lacertoidea),2]=="Omnivorous")
+@
+
+One interesting pattern stands out when we compare this to Fig~\ref{fig2}.
+If we look at who is eating plants, the majority of herbivorous or omnivorous
+species occur among iguanians: in the dataset there are \Sexpr{iguania_plants}
+plant-eating iguanians compared to \Sexpr{skink_plants} plant-eating skinks and
+\Sexpr{lacertid_plants} plant-eating lacertoids.
+However, in most cases where an iguanian is
+eating plant matter, the model infers an earlier origin of multicuspid teeth in
+an ancestor that didn't consume plants. Consequently, iguanians contribute
+relatively little to the signal of positive correlation under the current
+model, and this is also clear from Fig~\ref{fig2}, which shows few
+coincident dental-diet transitions among iguanians compared to among
+skinks and lacertoids.
+
+\section{Code appendix}
+\label{sec:capp}
+
+<<echo=TRUE,eval=FALSE>>=
+<<classify_coincident_transitions>>
+@
+
+<<echo=TRUE,eval=FALSE>>=
+<<outline_clade>>
+@
+
+<<echo=TRUE,eval=FALSE>>=
+<<clade_theta>>
+@
+
+Data for Fig~\ref{fig2}
+<<echo=TRUE,eval=FALSE>>=
+<<outline_clade_plot_setup>>
+@
+
+The actual Fig~\ref{fig2}
+<<echo=TRUE,eval=FALSE>>=
+<<outline_clade_plot>>
+@
+
+Helper function for Fig~\ref{fig3}
+<<echo=TRUE,eval=FALSE>>=
+<<piepoints>>
+@
+
+The actual Fig~\ref{fig3}
+<<echo=TRUE,eval=FALSE>>=
+<<asr_plot>>
+@
+
+\begin{thebibliography}{10}
+\label{sec:bib}
+
+\bibitem{Hobolth2005}
+Hobolth, A. \& Jensen, J.L. (2005) Statistical inference in evolutionary models
+  of dna sequences via the em algorithm. \emph{Statistical Applications in
+  Genetics and Molecular Biology} \textbf{4}.
+
+\bibitem{Horn1991}
+Horn, R.A. \& Johnson, C.R. (1991) \emph{Topics in Matrix Analysis}.
+  Cambridge University Press.
+  
+\bibitem{Lafuma2021}
+Lafuma, F., Corfe, I.J., Clavel, J. \& Di-Poï, N. (2021) Multiple evolutionary
+  origins and losses of tooth complexity in squamates. \emph{Nature
+  Communications} \textbf{12}.
+
+\bibitem{Lewis2001}
+Lewis, P.O. (2001) A likelihood approach to estimating phylogeny from discrete
+  morphological character data. \emph{Systematic Biology} \textbf{50},
+  913–925.
+  
+\bibitem{Lindskog2003}
+Lindskog, F. \& McNeil, A.J. (2003) Common poisson shock models: Applications
+  to insurance and credit risk modelling. \emph{ASTIN Bulletin} \textbf{33},
+  209–238.
+
+\bibitem{Minin2008}
+Minin, V.N. \& Suchard, M.A. (2008) Fast, accurate and simulation free
+  stochastic-mapping. \emph{Philos Trans R Soc Lond B Biol Sci} \textbf{363},
+  3985-95.
+  
+\bibitem{Neyman1971}
+Neyman, J. (1971) Molecular studies of evolution: a source of novel statistical
+  problems. In \emph{Statistical Decision Theory and Related Topics}, S.S. Gupta
+  and J. Yackel (Eds), pp. 1--27. Academic Press.
+  
+\bibitem{Ross1995}
+Ross, S.M. (1995) \emph{Stochastic processes}. John Wiley \& Sons.
+  
+\bibitem{Tuffley1997}
+Tuffley, C. \& Steel, M. (1997) Links between maximum likelihood and maximum
+  parsimony under a simple model of site substitution. \emph{Bulletin of
+  mathematical biology} \textbf{59}, 581--607.
+
+\end{thebibliography}
+
+\addcontentsline{toc}{section}{References}
+
+\end{document}
+
+

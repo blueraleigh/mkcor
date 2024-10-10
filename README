@@ -1,0 +1,20 @@
+To compile the mkcor R package:
+
+1) ensure that R is installed
+2) open a terminal
+3) cd into the directory containing this README file
+4) execute the following commands:
+     R CMD build .
+     R CMD INSTALL mkcor_1.0.tar.gz
+
+To get started using the package, start a new R session and type
+
+  > library(mkcor)
+  > ?mkcor
+
+A vignette is also available
+
+  > vignette("CorrelatedMk")
+
+Building the vignette takes a little time and can be excluded by
+invoking the build process as R CMD build --no-build-vignettes .

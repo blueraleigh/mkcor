@@ -1,0 +1,14 @@
+useDynLib(mkcor, .registration=TRUE)
+exportPattern("^[[:alpha:]]+")
+
+
+importFrom(ape, as.phylo, keep.tip, drop.tip)
+importFrom(stats, reorder, optim, optimHess, runif, setNames)
+importFrom(utils, tail)
+
+S3method(as.ephylo, phylo)
+S3method(as.ephylo, multiPhylo)
+S3method(as.phylo, ephylo)
+S3method(keep.tip, ephylo)
+S3method(drop.tip, ephylo)
+S3method(reorder, ephylo)

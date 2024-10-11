@@ -18,7 +18,7 @@
 
 \definecolor{darkblue}{rgb}{0, 0, 0.9}
 
-\author{Authors}
+\author{Michael C. Grundler}
 \title{The correlated Mk model}
 %\date{}
 

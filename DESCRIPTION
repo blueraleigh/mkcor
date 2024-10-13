@@ -2,15 +2,22 @@ Package: mkcor
 Type: Package
 Title: Evolution of Categorical Characters Under the Correlated Mk Model
 Version: 1.0
-Date: 2024-05-20
+Date: 2024-10-13
 Author: Michael C. Grundler
 Maintainer: Michael C. Grundler <mcgrundler@gmail.com>
 Authors@R: person(given = c("Michael", "C."),
                   family = "Grundler",
                   role = c("aut", "cre"),
                   email = "mcgrundler@gmail.com")
-Description: Implements the correlated Mk model for modeling correlated
-  evolution of two categorical characters on a phylogeny.
+Description: The correlated Mk model is a continuous-time Markov chain
+  that describes the evolution of two categorical characters along the
+  branches of a phylogeny. Evolutionary changes in the two characters
+  form a correlated Poisson process known as a common shock model. The
+  mkcor package implements an expectation-maximization algorithm that
+  can be used to fit the correlated Mk model to data and return parameter
+  estimates and correlation coefficients, expected numbers of different 
+  types of evolutionary character state transitions, and ancestral state
+  reconstructions.
 Depends: R (>= 3.5.0), ape, stats, utils
 NeedsCompilation: yes
 License: GPL-3

@@ -3,12 +3,11 @@ Type: Package
 Title: Evolution of Categorical Characters Under the Correlated Mk Model
 Version: 1.0
 Date: 2024-10-13
-Author: Michael C. Grundler
-Maintainer: Michael C. Grundler <mcgrundler@gmail.com>
 Authors@R: person(given = c("Michael", "C."),
                   family = "Grundler",
                   role = c("aut", "cre"),
                   email = "mcgrundler@gmail.com")
+Maintainer: Michael C. Grundler <mcgrundler@gmail.com>
 Description: The correlated Mk model is a continuous-time Markov chain
   that describes the evolution of two categorical characters along the
   branches of a phylogeny. Evolutionary changes in the two characters

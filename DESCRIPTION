@@ -5,6 +5,10 @@ Version: 1.0
 Date: 2024-05-20
 Author: Michael C. Grundler
 Maintainer: Michael C. Grundler <mcgrundler@gmail.com>
+Authors@R: person(given = c("Michael", "C."),
+                  family = "Grundler",
+                  role = c("aut", "cre"),
+                  email = "mcgrundler@gmail.com")
 Description: Implements the correlated Mk model for modeling correlated
   evolution of two categorical characters on a phylogeny.
 Depends: R (>= 3.5.0), ape, stats, utils

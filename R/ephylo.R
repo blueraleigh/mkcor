@@ -206,7 +206,8 @@ as.phylo.ephylo = function(x, ...)
 #' S3 method for generic ape::keep.tip
 #' @param phy An \code{ephylo} object.
 #' @param tip Integer vector with indices of tips to keep.
-keep.tip.ephylo = function(phy, tip)
+#' @param ... Additional arguments.
+keep.tip.ephylo = function(phy, tip, ...)
 {
     as.ephylo(ape::keep.tip(ape::as.phylo(phy), tip))
 }

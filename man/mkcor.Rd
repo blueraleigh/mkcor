@@ -37,3 +37,7 @@ A package for fitting the correlated Mk model to character data on a phylogeny
 \code{vignette("CorrelatedMk")}
 }
 
+\author{
+\strong{Maintainer}: Michael C. Grundler \email{mcgrundler@gmail.com}
+
+}

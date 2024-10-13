@@ -4,12 +4,14 @@
 \alias{keep.tip.ephylo}
 \title{S3 method for generic ape::keep.tip}
 \usage{
-\method{keep.tip}{ephylo}(phy, tip)
+\method{keep.tip}{ephylo}(phy, tip, ...)
 }
 \arguments{
 \item{phy}{An \code{ephylo} object.}
 
 \item{tip}{Integer vector with indices of tips to keep.}
+
+\item{...}{Additional arguments.}
 }
 \description{
 S3 method for generic ape::keep.tip

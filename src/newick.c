@@ -3,6 +3,78 @@
 #include <assert.h>
 #include <ctype.h>
 
+/*
+The Newick Tree Format grammar archived from:
+https://phylipweb.github.io/phylip/newick_doc.html
+
+Thursday, August 30, 1990
+
+Gary Olsen's Interpretation of the "Newick's 8:45" Tree Format Standard
+
+Conventions:
+   Items in { } may appear zero or more times.
+   Items in [ ] are optional, they may appear once or not at all.
+   All other punctuation marks (colon, semicolon, parentheses, comma and
+         single quote) are required parts of the format.
+
+
+              tree ==> descendant_list [ root_label ] [ : branch_length ] ;
+
+   descendant_list ==> ( subtree { , subtree } )
+
+           subtree ==> descendant_list [internal_node_label] [: branch_length]
+                   ==> leaf_label [: branch_length]
+
+            root_label ==> label
+   internal_node_label ==> label
+            leaf_label ==> label
+
+                 label ==> unquoted_label
+                       ==> quoted_label
+
+        unquoted_label ==> string_of_printing_characters
+          quoted_label ==> ' string_of_printing_characters '
+
+         branch_length ==> signed_number
+                       ==> unsigned_number
+
+
+Notes:
+   Unquoted labels may not contain blanks, parentheses, square brackets,
+        single_quotes, colons, semicolons, or commas.
+   Underscore characters in unquoted labels are converted to blanks.
+   Single quote characters in a quoted label are represented by two single
+        quotes.
+   Blanks or tabs may appear anywhere except within unquoted labels or
+        branch_lengths.
+   Newlines may appear anywhere except within labels or branch_lengths.
+   Comments are enclosed in square brackets and may appear anywhere
+        newlines are permitted.
+
+
+Other notes:
+   PAUP (David Swofford) allows nesting of comments.
+   TreeAlign (Jotun Hein) writes a root node branch length (with a value of
+        0.0).
+   PHYLIP (Joseph Felsenstein) requires that an unrooted tree begin with a
+        trifurcation; it will not "uproot" a rooted tree.
+
+
+Example:
+
+   (((One:0.2,Two:0.3):0.3,(Three:0.5,Four:0.3):0.2):0.3,Five:0.7):0.0;
+
+           +-+ One
+        +--+
+        |  +--+ Two
+     +--+
+     |  | +----+ Three
+     |  +-+
+     |    +--+ Four
+     +
+     +------+ Five
+*/
+
 typedef struct newick_reader {
     int *parent;
     int *left_child;
@@ -103,10 +175,27 @@ newick_maybe_realloc(newick_reader_t *reader)
 }
 
 
+static char
+newick_getc(newick_reader_t *reader)
+{
+    int c = fgetc(reader->newickfile);
+    while (isspace(c))
+        c = fgetc(reader->newickfile);
+    return c;
+}
+
+
+static void
+newick_ungetc(newick_reader_t *reader, char c)
+{
+    ungetc(c, reader->newickfile);
+}
+
+
 static void
 newick_read_brlen(newick_reader_t *reader)
 {
-    char c = fgetc(reader->newickfile);
+    char c = newick_getc(reader);
     if (c == ':')
     {
         int has_brlen = fscanf(reader->newickfile, "%lf", &reader->brlen);
@@ -123,34 +212,44 @@ newick_read_brlen(newick_reader_t *reader)
 static void
 newick_read_label(newick_reader_t *reader)
 {
-    int has_label = fscanf(
-        reader->newickfile, " %1023[^,;:()]", reader->label);
-    if (has_label)
+    char c = newick_getc(reader);
+    if (c == '[')
     {
-        int n = strlen(reader->label);
-        while (isspace(reader->label[n-1]))
-            --n;
-        reader->label[n] = '\0';
-        SET_STRING_ELT(reader->node_label, reader->curnode, 
-            Rf_mkChar(reader->label));
+        ungetc(c, reader->newickfile);
+    }
+    else
+    {
+        ungetc(c, reader->newickfile);
+        int has_label = fscanf(
+            reader->newickfile, " %1023[^,;:()]", reader->label);
+        if (has_label)
+        {
+            int n = strlen(reader->label);
+            while (isspace(reader->label[n-1]))
+                --n;
+            reader->label[n] = '\0';
+            SET_STRING_ELT(reader->node_label, reader->curnode, 
+                Rf_mkChar(reader->label));
+        }
     }
 }
 
 
-static char
-newick_getc(newick_reader_t *reader)
-{
-    int c = fgetc(reader->newickfile);
-    while (isspace(c))
-        c = fgetc(reader->newickfile);
-    return c;
-}
-
-
 static void
-newick_ungetc(newick_reader_t *reader, char c)
+newick_read_comment(newick_reader_t *reader)
 {
-    ungetc(c, reader->newickfile);
+    char c = newick_getc(reader);
+    if (c == '[')
+    {
+        fscanf(reader->newickfile, " %*[^]]");
+        c = fgetc(reader->newickfile);
+        if (c != ']')
+            Rf_error("missing closing bracket in note");
+    }
+    else
+    {
+        ungetc(c, reader->newickfile);
+    }
 }
 
 
@@ -250,6 +349,7 @@ newick_read(newick_reader_t *reader)
             default:
                 newick_ungetc(reader, c);
                 newick_read_label(reader);
+                newick_read_comment(reader);
                 newick_read_brlen(reader);
                 break;
         }

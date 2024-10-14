@@ -82,6 +82,13 @@ typedef struct ctmc {
 } ctmc_t;
 
 
+/* Expand (a+b+c+d)(e+f+g+h) as
+** 
+** ae + bf + cg + dh +
+** be + af + ce + ag +
+** de + ah + bg + cf +
+** bh + df + ch + dg
+*/
 static void
 EXPAND(double p[4], double q[4], double A[16])
 {
@@ -109,6 +116,8 @@ ctmc_expand_coefficients(ctmc_t *ctmc)
 {
     double kx = ctmc->num_states_x;
     double ky = ctmc->num_states_y;
+    /* These are the coefficients preceding the exponential
+    ** factors in the transition probabilities */
     double p00[4] = {1, (kx-1), (ky-1), (kx-1)*(ky-1)};
     double p10[4] = {1, -1, (ky-1), -(ky-1)};
     double p01[4] = {1, (kx-1), -1, -(kx-1)};
@@ -374,6 +383,8 @@ ctmc_convolve(ctmc_t *ctmc, double time)
     double Dy = exp(dy*time);
     double Dxy = exp(dxy*time);
     double k = ctmc->num_states * ctmc->num_states;
+    /* Take care to fill out I in the same ordering
+    ** as we use in ctmc_expand_coefficients */
     ctmc->I[0] = time * 1;
     ctmc->I[1] = time * Dx;
     ctmc->I[2] = time * Dy;

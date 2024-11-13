@@ -58,8 +58,8 @@ models.}
 A list with the following components:
 \itemize{
 \item \code{par} The maximum likelihood estimates of the overall rates of
-  character evolution and character correlation with their 95% confidence
-  intervals.
+  character evolution and character correlation along with their standard
+  errors.
 \item \code{value} The log likelihood of the best-fitting model.
 \item \code{counts} The number of likelihood evaluations made by \code{optim}.
 \item \code{convergence} The convergence code returned by \code{optim}.

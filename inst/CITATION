@@ -1,0 +1,11 @@
+bibentry(bibtype="Article",
+    author = c(person(given=c("Michael", "C."), family="Grundler")),
+    title = "Correlated evolution of categorical characters under a simple model",
+    journal = "Evolution",
+    volume = "79",
+    number = "2",
+    pages = "309-318",
+    year = "2025",
+    doi = "10.1093/evolut/qpae166",
+    header = "To cite mkcor in publications use:"
+)
